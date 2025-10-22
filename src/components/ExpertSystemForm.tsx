@@ -31,6 +31,7 @@ Desafios identificados:
 
 interface FormData {
   file: File | null;
+  transcription: string | null;
   observacoes: string;
   cliente: string;
   dataRef: string;
@@ -45,6 +46,7 @@ interface ExpertSystemFormProps {
 export const ExpertSystemForm = ({ onSubmit, disabled }: ExpertSystemFormProps) => {
   const [formData, setFormData] = useState<FormData>({
     file: null,
+    transcription: null,
     observacoes: "",
     cliente: "",
     dataRef: new Date().toISOString().split('T')[0],
@@ -71,8 +73,8 @@ export const ExpertSystemForm = ({ onSubmit, disabled }: ExpertSystemFormProps) 
   };
 
   const handleSubmit = () => {
-    if (!formData.file) {
-      toast.error("Por favor, envie o arquivo de transcrição");
+    if (!formData.file && !formData.transcription) {
+      toast.error("Por favor, envie um arquivo de transcrição ou obtenha via tl.dv");
       return;
     }
 
@@ -96,6 +98,7 @@ export const ExpertSystemForm = ({ onSubmit, disabled }: ExpertSystemFormProps) 
   const handleClear = () => {
     setFormData({
       file: null,
+      transcription: null,
       observacoes: "",
       cliente: "",
       dataRef: new Date().toISOString().split('T')[0],
@@ -115,6 +118,7 @@ export const ExpertSystemForm = ({ onSubmit, disabled }: ExpertSystemFormProps) 
     <div className="space-y-6">
       <FileUpload
         onFileChange={(file) => setFormData(prev => ({ ...prev, file }))}
+        onTranscriptionChange={(transcription) => setFormData(prev => ({ ...prev, transcription }))}
         disabled={disabled}
       />
 
