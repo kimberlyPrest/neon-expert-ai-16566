@@ -20,13 +20,22 @@ const Index = () => {
     toast.info("🔄 Expert System em execução... Analisando call e criando exemplos práticos.");
 
     try {
-      // Converter arquivo para base64
-      const fileBase64 = await crewAIService.convertFileToBase64(formData.file);
+      // Preparar o conteúdo (arquivo ou transcrição do tl.dv)
+      let fileContent: string;
+      
+      if (formData.file) {
+        fileContent = await crewAIService.convertFileToBase64(formData.file);
+      } else if (formData.transcription) {
+        // Converter a transcrição para base64 se veio do tl.dv
+        fileContent = btoa(unescape(encodeURIComponent(formData.transcription)));
+      } else {
+        throw new Error("Nenhum arquivo ou transcrição fornecido");
+      }
 
       // Iniciar o crew
       const kickoffResponse = await crewAIService.kickoff({
         inputs: {
-          file: fileBase64,
+          file: fileContent,
           observacoes: formData.observacoes || undefined,
           cliente: formData.cliente,
           consultor: formData.consultor,
@@ -59,7 +68,7 @@ const Index = () => {
         cliente: formData.cliente,
         consultor: formData.consultor,
         dataProcessamento: new Date().toLocaleString('pt-BR'),
-        referenciaArquivo: formData.file.name,
+        referenciaArquivo: formData.file ? formData.file.name : 'Transcrição tl.dv',
         taskId: kickoffResponse.task_id,
         metricas: {
           paginas: result.paginas || Math.floor(Math.random() * 20) + 10,
