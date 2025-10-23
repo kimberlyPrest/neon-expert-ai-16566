@@ -14,6 +14,7 @@ const Index = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [resultData, setResultData] = useState<any>(null);
   const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
+  const [statusData, setStatusData] = useState<any>(null);
 
   const handleFormSubmit = async (formData: any) => {
     setViewState("processing");
@@ -56,10 +57,11 @@ const Index = () => {
         kickoffResponse.task_id,
         (status) => {
           console.log("Status atualizado:", status);
-          // Atualizar UI com progresso se disponível
-          if (status.progress) {
-            console.log(`Progresso: ${status.progress}%`);
-          }
+          // Atualizar UI com progresso real
+          setStatusData({
+            status: status.status,
+            progress: status.progress || 0
+          });
         }
       );
 
@@ -138,6 +140,7 @@ const Index = () => {
     setResultData(null);
     setErrorMessage("");
     setCurrentTaskId(null);
+    setStatusData(null);
   };
 
   const handleViewSummary = () => {
@@ -153,6 +156,7 @@ const Index = () => {
     setViewState("form");
     setErrorMessage("");
     setCurrentTaskId(null);
+    setStatusData(null);
   };
 
   return (
@@ -169,12 +173,18 @@ const Index = () => {
 
           {viewState === "processing" && (
             <div className="p-6 rounded-lg neon-border bg-card/50 backdrop-blur-sm">
-              <ProcessingState />
+              <ProcessingState statusData={statusData} />
               {currentTaskId && (
                 <div className="mt-4 p-3 rounded bg-muted/50 border border-border">
                   <p className="text-xs text-muted-foreground">
                     Task ID: <span className="font-mono text-primary">{currentTaskId}</span>
                   </p>
+                  {statusData && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Status: <span className="font-mono text-primary">{statusData.status}</span>
+                      {statusData.progress > 0 && ` - ${statusData.progress}%`}
+                    </p>
+                  )}
                 </div>
               )}
             </div>

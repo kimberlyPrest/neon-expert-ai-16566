@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { Progress } from "./ui/progress";
 
@@ -11,32 +10,22 @@ const AGENTS = [
   { id: 6, name: "Validador", description: "aprovando entrega final...", duration: 25 },
 ];
 
-export const ProcessingState = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [progress, setProgress] = useState(0);
+interface ProcessingStateProps {
+  statusData?: {
+    status: string;
+    progress?: number;
+  };
+}
 
-  useEffect(() => {
-    const totalDuration = AGENTS.reduce((sum, agent) => sum + agent.duration, 0);
-    let elapsed = 0;
-
-    const interval = setInterval(() => {
-      elapsed += 1;
-      const newProgress = Math.min((elapsed / totalDuration) * 100, 99);
-      setProgress(newProgress);
-
-      // Atualizar step baseado no progresso
-      let accumulatedDuration = 0;
-      for (let i = 0; i < AGENTS.length; i++) {
-        accumulatedDuration += AGENTS[i].duration;
-        if (elapsed < accumulatedDuration) {
-          setCurrentStep(i);
-          break;
-        }
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+export const ProcessingState = ({ statusData }: ProcessingStateProps) => {
+  // Usar o progresso real da API ou calcular baseado no status
+  const progress = statusData?.progress || 0;
+  
+  // Calcular o step atual baseado no progresso
+  const currentStep = Math.min(
+    Math.floor((progress / 100) * AGENTS.length),
+    AGENTS.length - 1
+  );
 
   const currentAgent = AGENTS[currentStep];
 
