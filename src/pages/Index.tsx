@@ -32,6 +32,10 @@ const Index = () => {
         throw new Error("Nenhum arquivo ou transcrição fornecido");
       }
 
+      // Definir webhook URL
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const webhookUrl = `${supabaseUrl}/functions/v1/crewai-webhook`;
+
       // Iniciar o crew
       const kickoffResponse = await crewAIService.kickoff({
         inputs: {
@@ -41,6 +45,7 @@ const Index = () => {
           consultor: formData.consultor,
           data_ref: formData.dataRef,
         },
+        webhook_url: webhookUrl,
       });
 
       setCurrentTaskId(kickoffResponse.task_id);
