@@ -27,10 +27,10 @@ const Index = () => {
       const kickoffResponse = await crewAIService.kickoff({
         inputs: {
           file: fileBase64,
-          observacoes: formData.observacoes || "",
+          observacoes: formData.observacoes || undefined,
           cliente: formData.cliente,
           consultor: formData.consultor,
-          data_ref: formData.data_Ref,
+          data_ref: formData.dataRef,
         },
       });
 

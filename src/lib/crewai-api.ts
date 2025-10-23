@@ -3,7 +3,7 @@ const BEARER_TOKEN = "27ca1ca2808f";
 
 interface KickoffPayload {
   inputs: {
-    file: string; // base64 ou URL se suportado
+    file?: string; // base64 ou URL se suportado
     observacoes?: string;
     cliente: string;
     consultor: string;
