@@ -8,8 +8,8 @@ interface KickoffPayload {
     cliente: string;
     consultor: string;
     data_ref: string;
+    webhook_url?: string;
   };
-  webhook_url?: string;
 }
 
 interface KickoffResponse {
