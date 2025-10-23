@@ -55,6 +55,8 @@ export class CrewAIService {
 
   async kickoff(payload: KickoffPayload): Promise<KickoffResponse> {
     try {
+      console.log("Sending kickoff payload:", JSON.stringify(payload, null, 2));
+      
       const response = await fetch(`${API_BASE_URL}/kickoff`, {
         method: "POST",
         headers: this.headers,
@@ -63,6 +65,7 @@ export class CrewAIService {
 
       if (!response.ok) {
         const errorText = await response.text();
+        console.error("Kickoff error response:", errorText);
         throw new Error(`Failed to kickoff: ${response.statusText} - ${errorText}`);
       }
 
