@@ -21,17 +21,12 @@ const Index = () => {
     toast.info("🔄 Expert System em execução... Analisando call e criando exemplos práticos.");
 
     try {
-      // Preparar o conteúdo (arquivo ou transcrição do tl.dv)
-      let fileContent: string;
-      
-      if (formData.file) {
-        fileContent = await crewAIService.convertFileToBase64(formData.file);
-      } else if (formData.transcription) {
-        // Converter a transcrição para base64 se veio do tl.dv
-        fileContent = btoa(unescape(encodeURIComponent(formData.transcription)));
-      } else {
-        throw new Error("Nenhum arquivo ou transcrição fornecido");
+      // Converter o arquivo .docx para base64
+      if (!formData.file) {
+        throw new Error("Nenhum arquivo fornecido");
       }
+      
+      const fileContent = await crewAIService.convertFileToBase64(formData.file);
 
       // Definir webhook URL
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -77,7 +72,7 @@ const Index = () => {
         cliente: formData.cliente,
         consultor: formData.consultor,
         dataProcessamento: new Date().toLocaleString('pt-BR'),
-        referenciaArquivo: formData.file ? formData.file.name : 'Transcrição tl.dv',
+        referenciaArquivo: formData.file.name,
         taskId: kickoffResponse.task_id,
         metricas: {
           paginas: result.paginas || Math.floor(Math.random() * 20) + 10,
